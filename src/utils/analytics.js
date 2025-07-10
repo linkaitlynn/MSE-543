@@ -1,7 +1,7 @@
 // src/utils/analytics.js
 
 // Replace with your actual GA4 Measurement ID
-export const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+export const GA_MEASUREMENT_ID = 'G-N91F7P2B63';
 
 // Initialize Google Analytics with hash change tracking
 export const initGA = () => {
@@ -56,18 +56,22 @@ export const initGA = () => {
 // Track page views with hash router support
 export const trackPageView = (path, title) => {
   if (typeof window.gtag !== 'undefined') {
-    // For hash router, we need to include the hash in the page path
+    // Force the full URL with hash for hash router
     const fullPath = window.location.pathname + window.location.hash;
+    const cleanPath = fullPath || '/';
     
-    window.gtag('config', GA_MEASUREMENT_ID, {
-      page_path: fullPath,
+    console.log('Tracking page view:', { fullPath, cleanPath, title });
+    
+    // Send page_view event with the hash-included path
+    window.gtag('event', 'page_view', {
+      page_path: cleanPath,
       page_title: title,
       page_location: window.location.href,
     });
     
-    // Also send as a page_view event for better tracking
-    window.gtag('event', 'page_view', {
-      page_path: fullPath,
+    // Also update the config to ensure consistency
+    window.gtag('config', GA_MEASUREMENT_ID, {
+      page_path: cleanPath,
       page_title: title,
       page_location: window.location.href,
     });
