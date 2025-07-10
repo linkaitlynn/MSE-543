@@ -62,18 +62,34 @@ export const trackPageView = (path, title) => {
     
     console.log('Tracking page view:', { fullPath, cleanPath, title });
     
-    // Send page_view event with the hash-included path
+    // Send page_view event with explicit page_path
     window.gtag('event', 'page_view', {
       page_path: cleanPath,
       page_title: title,
       page_location: window.location.href,
+      // Add custom parameters to ensure tracking
+      custom_page_path: cleanPath,
+      route_name: title.split(' - ')[0], // e.g., "Products", "Shopping Cart"
     });
     
-    // Also update the config to ensure consistency
+    // Send a separate custom event for better real-time tracking
+    window.gtag('event', 'route_change', {
+      page_path: cleanPath,
+      page_title: title,
+      page_location: window.location.href,
+      event_category: 'Navigation',
+      event_label: cleanPath,
+    });
+    
+    // Also update the config
     window.gtag('config', GA_MEASUREMENT_ID, {
       page_path: cleanPath,
       page_title: title,
       page_location: window.location.href,
+      // Force tracking of hash changes
+      custom_map: {
+        'custom_dimension_1': 'page_path'
+      }
     });
   }
 };
