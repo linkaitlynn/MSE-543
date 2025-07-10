@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/MSE-543/static/css/main.033b0d8f.css",
+    "main.js": "/MSE-543/static/js/main.1cac6802.js",
+    "index.html": "/MSE-543/index.html",
+    "main.033b0d8f.css.map": "/MSE-543/static/css/main.033b0d8f.css.map",
+    "main.1cac6802.js.map": "/MSE-543/static/js/main.1cac6802.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.033b0d8f.css",
+    "static/js/main.1cac6802.js"
+  ]
+}
