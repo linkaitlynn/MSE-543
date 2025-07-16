@@ -1,8 +1,24 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Product from '../components/Product';
 
 const WishlistPage = ({ wishlist, removeFromWishlist, addToCart, toggleWishlist, isInWishlist }) => {
   const navigate = useNavigate();
+  const [addedToCartItems, setAddedToCartItems] = useState(new Set());
+
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    // Add visual feedback
+    setAddedToCartItems(prev => new Set([...prev, product.id]));
+    // Remove feedback after 2 seconds
+    setTimeout(() => {
+      setAddedToCartItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(product.id);
+        return newSet;
+      });
+    }, 2000);
+  };
 
   if (wishlist.length === 0) {
     return (
@@ -16,7 +32,7 @@ const WishlistPage = ({ wishlist, removeFromWishlist, addToCart, toggleWishlist,
         <p className="text-gray-600 mb-6">Start adding products to your wishlist!</p>
         <button 
           onClick={() => navigate('/products')}
-          className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+          className="bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
         >
           Browse Products
         </button>
@@ -31,61 +47,46 @@ const WishlistPage = ({ wishlist, removeFromWishlist, addToCart, toggleWishlist,
         <span className="text-gray-600">{wishlist.length} items</span>
       </div>
       
+      {/* Success Message */}
+      {addedToCartItems.size > 0 && (
+        <div className="mb-6 p-4 bg-green-100 border border-green-200 rounded-lg">
+          <div className="flex items-center space-x-2">
+            <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span className="text-green-800 font-medium">
+              {addedToCartItems.size === 1 
+                ? 'Item added to cart!' 
+                : `${addedToCartItems.size} items added to cart!`
+              }
+            </span>
+          </div>
+        </div>
+      )}
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {wishlist.map(product => (
-          <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-            <div className="relative">
-              <img
-                src={product.image || 'https://via.placeholder.com/300x200?text=Product+Image'}
-                alt={product.name}
-                className="w-full h-48 object-cover"
-                onError={(e) => {
-                  e.target.src = 'https://via.placeholder.com/300x200?text=Product+Image';
-                }}
-              />
-              <button
-                onClick={() => toggleWishlist(product)}
-                className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
-              >
-                <svg
-                  className="w-5 h-5 text-red-500 fill-current"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                  />
-                </svg>
-              </button>
-            </div>
-            
-            <div className="p-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{product.name}</h3>
-              {product.description && (
-                <p className="text-gray-600 text-sm mb-3">{product.description}</p>
-              )}
-              <div className="flex items-center justify-between">
-                <span className="text-xl font-bold text-green-600">${product.price}</span>
-                <div className="space-x-2">
-                  <button
-                    onClick={() => addToCart(product)}
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
-                  >
-                    Add to Cart
-                  </button>
-                  <button
-                    onClick={() => removeFromWishlist(product.id)}
-                    className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition-colors"
-                  >
-                    Remove
-                  </button>
+          <div key={product.id} className="relative">
+            {/* Added to Cart Overlay */}
+            {addedToCartItems.has(product.id) && (
+              <div className="absolute inset-0 bg-green-500/20 backdrop-blur-sm rounded-xl z-10 flex items-center justify-center">
+                <div className="bg-white rounded-lg p-4 shadow-lg">
+                  <div className="flex items-center space-x-2">
+                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-green-800 font-semibold">Added to Cart!</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+            
+            <Product
+              product={product}
+              addToCart={handleAddToCart}
+              toggleWishlist={toggleWishlist}
+              isInWishlist={isInWishlist}
+            />
           </div>
         ))}
       </div>
@@ -97,9 +98,9 @@ const WishlistPage = ({ wishlist, removeFromWishlist, addToCart, toggleWishlist,
               wishlist.forEach(product => addToCart(product));
               navigate('/cart');
             }}
-            className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+            className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-3 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
           >
-            Add All to Cart
+            Add All to Cart ({wishlist.length} items)
           </button>
         </div>
       )}

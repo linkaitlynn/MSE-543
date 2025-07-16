@@ -59,60 +59,74 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
         <Header 
           cartCount={cart.reduce((total, item) => total + item.quantity, 0)}
           wishlistCount={wishlist.length}
         />
-        <main className="flex-grow container mx-auto px-4 py-6">
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Home 
-                  addToCart={addToCart} 
-                  toggleWishlist={toggleWishlist}
-                  isInWishlist={isInWishlist}
-                />
-              }
-            />
-            <Route
-              path="/products"
-              element={
-                <Products 
-                  addToCart={addToCart} 
-                  toggleWishlist={toggleWishlist}
-                  isInWishlist={isInWishlist}
-                />
-              }
-            />
-            <Route
-              path="/cart"
-              element={
-                <CartPage
-                  cart={cart}
-                  updateQuantity={updateQuantity}
-                  removeFromCart={removeFromCart}
-                />
-              }
-            />
-            <Route
-              path="/wishlist"
-              element={
-                <WishlistPage
-                  wishlist={wishlist}
-                  removeFromWishlist={removeFromWishlist}
-                  addToCart={addToCart}
-                  toggleWishlist={toggleWishlist}
-                  isInWishlist={isInWishlist}
-                />
-              }
-            />
-            <Route
-              path="/checkout"
-              element={<CheckoutPage cart={cart} />}
-            />
-          </Routes>
+        <main className="pt-20 pb-6">
+          <div className="container mx-auto px-4">
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <div className="bg-white/60 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6">
+                    <Home 
+                      addToCart={addToCart} 
+                      toggleWishlist={toggleWishlist}
+                      isInWishlist={isInWishlist}
+                    />
+                  </div>
+                }
+              />
+              <Route
+                path="/products"
+                element={
+                  <div className="bg-white/60 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6">
+                    <Products 
+                      addToCart={addToCart} 
+                      toggleWishlist={toggleWishlist}
+                      isInWishlist={isInWishlist}
+                    />
+                  </div>
+                }
+              />
+              <Route
+                path="/cart"
+                element={
+                  <div className="bg-white/60 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6">
+                    <CartPage
+                      cart={cart}
+                      updateQuantity={updateQuantity}
+                      removeFromCart={removeFromCart}
+                    />
+                  </div>
+                }
+              />
+              <Route
+                path="/wishlist"
+                element={
+                  <div className="bg-white/60 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6">
+                    <WishlistPage
+                      wishlist={wishlist}
+                      removeFromWishlist={removeFromWishlist}
+                      addToCart={addToCart}
+                      toggleWishlist={toggleWishlist}
+                      isInWishlist={isInWishlist}
+                    />
+                  </div>
+                }
+              />
+              <Route
+                path="/checkout"
+                element={
+                  <div className="bg-white/60 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6">
+                    <CheckoutPage cart={cart} />
+                  </div>
+                }
+              />
+            </Routes>
+          </div>
         </main>
       </div>
     </Router>
