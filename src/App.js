@@ -60,6 +60,7 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+        <RouteTracker />
         <Header 
           cartCount={cart.reduce((total, item) => total + item.quantity, 0)}
           wishlistCount={wishlist.length}
@@ -133,5 +134,4 @@ function App() {
   );
 }
 
-// Change this from export default Home to:
 export default App;
